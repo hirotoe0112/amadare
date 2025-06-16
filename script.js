@@ -134,6 +134,7 @@ class FlashMathGame {
     async startGame(mode = 'normal') {
         if (this.isPlaying) return;
         
+        this.resetGame();
         this.gameMode = mode;
         this.isPlaying = true;
         this.generateRandomNumbers();
