@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フラッシュ暗算</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 初期画面 -->
+        <div id="initial-screen" class="screen active">
+            <div class="initial-content">
+                <img src="images/flash-math-logo.png" alt="フラッシュ暗算" class="logo">
+                <h1><span class="main-title">フラッシュ暗算</span><br><span class="sub-title">あまだれ</span></h1>
+                <div class="button-group">
+                    <button id="start-button" class="start-btn">スタート</button>
+                    <button id="settings-button" class="settings-btn">設定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- カウントダウン画面 -->
+        <div id="countdown-screen" class="screen">
+            <div class="countdown-content">
+                <div id="countdown-number" class="countdown-number"></div>
+                <div class="countdown-message">準備してください</div>
+            </div>
+        </div>
+
+        <!-- フラッシュ表示画面 -->
+        <div id="flash-screen" class="screen">
+            <div class="flash-content">
+                <div id="flash-number" class="flash-number"></div>
+                <div id="progress" class="progress">
+                    <span id="current-number">0</span> / 10
+                </div>
+            </div>
+        </div>
+
+        <!-- 入力画面 -->
+        <div id="input-screen" class="screen">
+            <div class="input-content">
+                <h2>合計を入力してください</h2>
+                <div class="input-group">
+                    <input type="number" id="answer-input" placeholder="答えを入力" autofocus>
+                    <button id="submit-button" class="submit-btn">決定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="result-screen" class="screen">
+            <div class="result-content">
+                <div id="result-message" class="result-message"></div>
+                <div id="score-details" class="score-details">
+                    <div class="score-item">
+                        <span class="label">あなたの答え:</span>
+                        <span id="user-answer" class="value"></span>
+                    </div>
+                    <div class="score-item">
+                        <span class="label">正解:</span>
+                        <span id="correct-answer" class="value"></span>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button id="play-again-button" class="play-again-btn">もう一度プレイ</button>
+                    <button id="back-to-start-button" class="back-btn">最初に戻る</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 設定画面 -->
+        <div id="settings-screen" class="screen">
+            <div class="settings-content">
+                <h2>設定</h2>
+                <div class="setting-item">
+                    <label for="interval-slider" class="setting-label">数字の表示間隔</label>
+                    <div class="slider-container">
+                        <input type="range" id="interval-slider" class="interval-slider" 
+                               min="0.1" max="1.0" step="0.1" value="0.3">
+                        <div class="slider-value">
+                            <span id="interval-value">0.3</span>秒
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-actions">
+                    <button id="back-from-settings-button" class="confirm-btn">決定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
