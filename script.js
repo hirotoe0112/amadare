@@ -5,6 +5,9 @@ class FlashMathGame {
         this.totalSum = 0;
         this.isPlaying = false;
         this.displayInterval = 0.3;
+        this.gameMode = 'normal';
+        this.fallenCount = 0;
+        this.fallingNumbers = [];
         
         this.initializeElements();
         this.bindEvents();
@@ -16,17 +19,21 @@ class FlashMathGame {
             initial: document.getElementById('initial-screen'),
             countdown: document.getElementById('countdown-screen'),
             flash: document.getElementById('flash-screen'),
+            amadare: document.getElementById('amadare-screen'),
             input: document.getElementById('input-screen'),
             result: document.getElementById('result-screen'),
             settings: document.getElementById('settings-screen')
         };
         
         this.elements = {
-            startButton: document.getElementById('start-button'),
+            normalModeButton: document.getElementById('normal-mode-button'),
+            amadareModeButton: document.getElementById('amadare-mode-button'),
             settingsButton: document.getElementById('settings-button'),
             countdownNumber: document.getElementById('countdown-number'),
             flashNumber: document.getElementById('flash-number'),
             currentNumber: document.getElementById('current-number'),
+            fallingArea: document.getElementById('falling-area'),
+            fallenCount: document.getElementById('fallen-count'),
             answerInput: document.getElementById('answer-input'),
             submitButton: document.getElementById('submit-button'),
             resultMessage: document.getElementById('result-message'),
@@ -41,10 +48,11 @@ class FlashMathGame {
     }
     
     bindEvents() {
-        this.elements.startButton.addEventListener('click', () => this.startGame());
+        this.elements.normalModeButton.addEventListener('click', () => this.startGame('normal'));
+        this.elements.amadareModeButton.addEventListener('click', () => this.startGame('amadare'));
         this.elements.settingsButton.addEventListener('click', () => this.showSettingsScreen());
         this.elements.submitButton.addEventListener('click', () => this.submitAnswer());
-        this.elements.playAgainButton.addEventListener('click', () => this.startGame());
+        this.elements.playAgainButton.addEventListener('click', () => this.startGame(this.gameMode));
         this.elements.backToStartButton.addEventListener('click', () => this.showInitialScreen());
         this.elements.backFromSettingsButton.addEventListener('click', () => this.showInitialScreen());
         
@@ -91,10 +99,14 @@ class FlashMathGame {
         this.currentIndex = 0;
         this.totalSum = 0;
         this.isPlaying = false;
+        this.fallenCount = 0;
+        this.fallingNumbers = [];
         this.elements.answerInput.value = '';
         this.elements.flashNumber.textContent = '';
         this.elements.currentNumber.textContent = '0';
         this.elements.countdownNumber.textContent = '';
+        this.elements.fallenCount.textContent = '0';
+        this.elements.fallingArea.innerHTML = '';
     }
 
     async playCountdown() {
@@ -119,18 +131,23 @@ class FlashMathGame {
         });
     }
     
-    async startGame() {
+    async startGame(mode = 'normal') {
         if (this.isPlaying) return;
         
+        this.gameMode = mode;
         this.isPlaying = true;
         this.generateRandomNumbers();
         this.currentIndex = 0;
         
         await this.playCountdown();
         
-        this.showScreen('flash');
-        
-        await this.playFlashSequence();
+        if (mode === 'amadare') {
+            this.showScreen('amadare');
+            await this.playAmadareSequence();
+        } else {
+            this.showScreen('flash');
+            await this.playFlashSequence();
+        }
         
         this.showInputScreen();
     }
@@ -207,6 +224,88 @@ class FlashMathGame {
     updateDisplayInterval(value) {
         this.displayInterval = value;
         this.elements.intervalValue.textContent = value;
+    }
+    
+    async playAmadareSequence() {
+        return new Promise((resolve) => {
+            this.fallenCount = 0;
+            this.fallingNumbers = [];
+            
+            let numbersDropped = 0;
+            
+            const dropNumber = () => {
+                if (numbersDropped >= this.numbers.length) {
+                    return;
+                }
+                
+                const number = this.numbers[numbersDropped];
+                const fallingNumber = this.createFallingNumber(number, numbersDropped);
+                this.fallingNumbers.push(fallingNumber);
+                
+                numbersDropped++;
+                
+                if (numbersDropped < this.numbers.length) {
+                    const nextDropDelay = Math.random() * 1000 + 500;
+                    setTimeout(dropNumber, nextDropDelay);
+                }
+            };
+            
+            const checkAllLanded = () => {
+                if (this.fallenCount >= this.numbers.length) {
+                    setTimeout(resolve, 500);
+                } else {
+                    setTimeout(checkAllLanded, 100);
+                }
+            };
+            
+            dropNumber();
+            checkAllLanded();
+        });
+    }
+    
+    createFallingNumber(number, index) {
+        const numberElement = document.createElement('div');
+        numberElement.className = 'falling-number';
+        numberElement.textContent = number;
+        
+        const areaWidth = this.elements.fallingArea.offsetWidth;
+        const areaHeight = this.elements.fallingArea.offsetHeight;
+        
+        const startX = Math.random() * (areaWidth - 100) + 50;
+        const fallDuration = Math.random() * 3000 + 2000;
+        
+        numberElement.style.left = startX + 'px';
+        numberElement.style.top = '-80px';
+        
+        this.elements.fallingArea.appendChild(numberElement);
+        
+        const startTime = Date.now();
+        
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / fallDuration, 1);
+            
+            const currentY = -80 + (areaHeight + 80) * progress;
+            numberElement.style.top = currentY + 'px';
+            
+            if (progress >= 1) {
+                numberElement.classList.add('landed');
+                this.fallenCount++;
+                this.elements.fallenCount.textContent = this.fallenCount;
+                
+                setTimeout(() => {
+                    if (numberElement.parentNode) {
+                        numberElement.parentNode.removeChild(numberElement);
+                    }
+                }, 300);
+            } else {
+                requestAnimationFrame(animate);
+            }
+        };
+        
+        requestAnimationFrame(animate);
+        
+        return numberElement;
     }
 }
 

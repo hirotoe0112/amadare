@@ -14,7 +14,8 @@
                 <img src="images/flash-math-logo.png" alt="フラッシュ暗算" class="logo">
                 <h1><span class="main-title">フラッシュ暗算</span><br><span class="sub-title">あまだれ</span></h1>
                 <div class="button-group">
-                    <button id="start-button" class="start-btn">スタート</button>
+                    <button id="normal-mode-button" class="mode-btn normal-mode">通常モード</button>
+                    <button id="amadare-mode-button" class="mode-btn amadare-mode">あまだれモード</button>
                     <button id="settings-button" class="settings-btn">設定</button>
                 </div>
             </div>
@@ -34,6 +35,16 @@
                 <div id="flash-number" class="flash-number"></div>
                 <div id="progress" class="progress">
                     <span id="current-number">0</span> / 10
+                </div>
+            </div>
+        </div>
+
+        <!-- あまだれモード画面 -->
+        <div id="amadare-screen" class="screen">
+            <div class="amadare-content">
+                <div id="falling-area" class="falling-area"></div>
+                <div id="amadare-progress" class="progress">
+                    落下中... <span id="fallen-count">0</span> / 10
                 </div>
             </div>
         </div>
