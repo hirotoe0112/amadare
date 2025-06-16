@@ -416,7 +416,14 @@ body {
     font-size: 1.2rem;
     font-weight: 600;
     color: #333;
+    margin-bottom: 8px;
+}
+
+.setting-description {
+    font-size: 0.9rem;
+    color: #666;
     margin-bottom: 15px;
+    font-style: italic;
 }
 
 .slider-container {
